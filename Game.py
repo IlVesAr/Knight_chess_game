@@ -7,7 +7,7 @@ pos = [(18, 18)]
 
 pos_to_go = []
 
-
+pos_was = []
 def WhereToGo(x, y, bl):
     return [(x + bl, y - bl * 2), (x + bl * 2, y - bl), (x + bl * 2, y + bl), (x + bl, y + bl * 2), (x - bl, y + bl * 2), (x - bl * 2, y + bl), (x - bl * 2, y - bl), (x - bl, y - bl * 2)]
 
@@ -15,7 +15,9 @@ def WhereToGo(x, y, bl):
 def DrAw(win):
     win.blit(board, (0, 0))
     for i in pos_to_go:
-        win.blit(where, (i[0] + 10, i[1] + 10))
+        win.blit(where, (i[0] + 11, i[1] + 11))
+    for x in pos_was:
+        x.draw(win)
     win.blit(kon, (knight.x, knight.y))
     pygame.display.update()
 
@@ -40,19 +42,22 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             for i in pos_to_go:
-                if win.blit(where, (i[0] + 10, i[1] + 10)).collidepoint(mouse_pos):
+                if win.blit(where, (i[0] + 11, i[1] + 11)).collidepoint(mouse_pos):
+                    pos_was.append(pg_plus.Kvadrat(knight.x//100 * 100 + 11, knight.y//100 * 100 + 10, 80, 80, 0, 0, pg_plus.color.red))
                     pos.append((i[0] + 18, i[1] + 18))
 
     key = pygame.key.get_pressed()
 
-    if key[pygame.K_LEFT] and ret == 0:
+    if key[pygame.K_LEFT] and ret == 0 and len(pos) > 1:
         pos.pop(-1)
+        pos_was.pop(-1)
         ret = 1
     elif not key[pygame.K_LEFT]:
         ret = 0
 
     if key[pygame.K_r]:
         pos = [(18, 18)]
+        pos_was = []
 
     knight.x, knight.y = pos[-1]
     pos_to_go = WhereToGo(knight.x//100 * 100, knight.y//100 * 100, 100)
