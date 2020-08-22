@@ -28,13 +28,33 @@ board = pygame.image.load('Resouces/chessboard.jpg')
 kon = pygame.image.load('Resouces/knight.png')
 where = pygame.image.load('Resouces/Circle.png')
 
+ret = 0
+
+mouse_pos = 0
 
 run = True
 while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if event.type == pygame.MOUSEBUTTONUP:
+            mouse_pos = pygame.mouse.get_pos()
+            for i in pos_to_go:
+                if win.blit(where, (i[0] + 10, i[1] + 10)).collidepoint(mouse_pos):
+                    pos.append((i[0] + 18, i[1] + 18))
 
+    key = pygame.key.get_pressed()
+
+    if key[pygame.K_LEFT] and ret == 0:
+        pos.pop(-1)
+        ret = 1
+    elif not key[pygame.K_LEFT]:
+        ret = 0
+
+    if key[pygame.K_r]:
+        pos = [(18, 18)]
+
+    knight.x, knight.y = pos[-1]
     pos_to_go = WhereToGo(knight.x//100 * 100, knight.y//100 * 100, 100)
     DrAw(win)
 
